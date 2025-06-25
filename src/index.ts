@@ -1,7 +1,14 @@
 import express from 'express'
+import middlewareLogResponses from './log_responses.js'
+import handlerReadiness from './handler_readiness.js'
 
 const app = express()
+const PORT = 8080
 
-app.listen(8080, () => {
-  console.log('Listening on port 8080...')
+app.use(middlewareLogResponses)
+app.use('/app', express.static('./src/app'))
+app.get('/healthz', handlerReadiness)
+
+app.listen(PORT, () => {
+  console.log(`Server is running at http://localhost:${PORT}`)
 })
