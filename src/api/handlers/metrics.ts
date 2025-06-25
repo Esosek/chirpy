@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import apiConfig from '../config.js'
+import apiConfig from '../../config.js'
 
 function handlerMetric(_req: Request, res: Response) {
   res.set('Content-Type', 'text/plain')
