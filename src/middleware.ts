@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
+import apiConfig from './config.js'
 
-function middlewareLogResponses(
+export function middlewareLogResponses(
   req: Request,
   res: Response,
   next: NextFunction
@@ -15,4 +16,11 @@ function middlewareLogResponses(
   next()
 }
 
-export default middlewareLogResponses
+export function middlewareMetricsInc(
+  _req: Request,
+  _res: Response,
+  next: NextFunction
+) {
+  apiConfig.fileserverHits++
+  next()
+}
