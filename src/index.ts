@@ -7,6 +7,7 @@ import handlerReadiness from './handlers/readiness.js'
 import handlerMetric from './handlers/metrics.js'
 import handlerReset from './handlers/reset.js'
 import handlerValidateChirp from './handlers/validate_chirp.js'
+import handlerCreateUser from './handlers/create_user.js'
 
 const app = express()
 const PORT = 8080
@@ -18,6 +19,7 @@ app.get('/api/healthz', handlerReadiness)
 app.get('/admin/metrics', handlerMetric)
 app.post('/admin/reset', handlerReset)
 app.post('/api/validate_chirp', handlerValidateChirp)
+app.post('/api/users', handlerCreateUser)
 app.use(errorHandler)
 
 app.listen(PORT, () => {
