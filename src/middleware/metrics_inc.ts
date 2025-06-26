@@ -1,12 +1,12 @@
 import { NextFunction, Request, Response } from 'express'
-import apiConfig from '../config.js'
+import { config } from '../config.js'
 
 function middlewareMetricsInc(
   _req: Request,
   _res: Response,
   next: NextFunction
 ) {
-  apiConfig.fileserverHits++
+  config.fileserverHits++
   next()
 }
 
