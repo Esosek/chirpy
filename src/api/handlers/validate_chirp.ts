@@ -1,17 +1,15 @@
-import { Request, Response } from 'express'
+import { NextFunction, Request, Response } from 'express'
 
 type Parameters = {
   body: string
 }
 
-function handlerValidateChirp(req: Request, res: Response) {
+function handlerValidateChirp(req: Request, res: Response, next: NextFunction) {
   try {
     const params = validateBody(req.body)
     res.status(200).json({ cleanedBody: profaneWords(params.body) })
   } catch (err) {
-    if (err instanceof Error) {
-      res.status(400).json({ error: err.message })
-    }
+    next(err)
   }
 }
 

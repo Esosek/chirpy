@@ -1,6 +1,20 @@
 import { NextFunction, Request, Response } from 'express'
 import apiConfig from './config.js'
 
+export function errorHandler(
+  err: Error,
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  if (err instanceof Error) {
+    console.log(err.message)
+    res.status(500).json({ error: 'Something went wrong on our end' })
+  } else {
+    next(err)
+  }
+}
+
 export function middlewareLogResponses(
   req: Request,
   res: Response,
