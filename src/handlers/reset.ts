@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import apiConfig from '../../config.js'
+import apiConfig from '../config.js'
 
 function handlerReset(_req: Request, res: Response) {
   apiConfig.fileserverHits = 0

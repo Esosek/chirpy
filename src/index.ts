@@ -1,13 +1,12 @@
 import express from 'express'
-import {
-  errorHandler,
-  middlewareLogResponses,
-  middlewareMetricsInc
-} from './middleware.js'
-import handlerReadiness from './api/handlers/readiness.js'
-import handlerMetric from './api/handlers/metrics.js'
-import handlerReset from './api/handlers/reset.js'
-import handlerValidateChirp from './api/handlers/validate_chirp.js'
+
+import errorHandler from './middleware/error_handler.js'
+import middlewareLogResponses from './middleware/log_responses.js'
+import middlewareMetricsInc from './middleware/metrics_inc.js'
+import handlerReadiness from './handlers/readiness.js'
+import handlerMetric from './handlers/metrics.js'
+import handlerReset from './handlers/reset.js'
+import handlerValidateChirp from './handlers/validate_chirp.js'
 
 const app = express()
 const PORT = 8080
