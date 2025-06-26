@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+import { ValidationError } from '../types/errors.js'
 
 function errorHandler(
   err: Error,
@@ -6,11 +7,11 @@ function errorHandler(
   res: Response,
   next: NextFunction
 ) {
-  if (err instanceof Error) {
-    console.log(err.message)
-    res.status(500).json({ error: 'Something went wrong on our end' })
+  if (err instanceof ValidationError) {
+    res.status(400).json({ error: err.message })
   } else {
-    next(err)
+    console.log(err)
+    res.status(500).send('Internal Server Error')
   }
 }
 

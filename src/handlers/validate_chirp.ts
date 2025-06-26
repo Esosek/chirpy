@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from 'express'
+import { ValidationError } from '../types/errors.js'
 
 type Parameters = {
   body: string
@@ -18,7 +19,7 @@ function validateBody(parsedBody: any): Parameters {
     throw new Error('Something went wrong')
   }
   if (parsedBody.body.length > 140) {
-    throw new Error('Chirp is too long')
+    throw new ValidationError('Chirp is too long. Max length is 140')
   }
   return parsedBody
 }
