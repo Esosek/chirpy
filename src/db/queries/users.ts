@@ -13,3 +13,11 @@ export async function createUser(user: NewUser) {
     throw new Error('Failed to create user')
   }
 }
+
+export async function deleteAllUsers() {
+  try {
+    await db.delete(users)
+  } catch (err) {
+    throw new Error('Failed to delete users')
+  }
+}

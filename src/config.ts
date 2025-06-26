@@ -2,8 +2,9 @@ import { MigrationConfig } from 'drizzle-orm/migrator'
 
 process.loadEnvFile()
 
-type Config = {
+type ApiConfig = {
   fileserverHits: number
+  platform: 'dev' | 'prod'
   db: DBConfig
 }
 
@@ -12,8 +13,9 @@ type DBConfig = {
   migrationConfig: MigrationConfig
 }
 
-export const config: Config = {
+export const config: ApiConfig = {
   fileserverHits: 0,
+  platform: getPlatform(),
   db: {
     url: envOrThrow('DB_URL'),
     migrationConfig: {
@@ -28,4 +30,12 @@ function envOrThrow(key: string) {
     throw new Error(`Environment variable ${key} is not set`)
   }
   return value
+}
+
+function getPlatform(): 'dev' | 'prod' {
+  const platform = process.env['PLATFORM']
+  if (platform === 'dev' || platform === 'prod') {
+    return platform
+  }
+  return 'prod'
 }
