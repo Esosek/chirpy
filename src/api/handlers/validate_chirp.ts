@@ -1,36 +1,34 @@
 import { Request, Response } from 'express'
 
-function validateChirp(req: Request, res: Response) {
-  let body = ''
+type Parameters = {
+  body: string
+}
 
-  req.on('data', (chunk) => {
-    body += chunk
-  })
-
-  req.on('end', () => {
-    try {
-      console.log(body)
-      const parsedBody = JSON.parse(body)
-      const validatedBody = validateBody(parsedBody)
-      if (validatedBody.body.length > 140) {
-        res.status(400).send({ error: 'Chirp is too long' })
-      } else {
-        res.status(200).send({ valid: true })
-      }
-    } catch (error) {
-      res.status(400).send({
-        error: 'Something went wrong'
-      })
+function handlerValidateChirp(req: Request, res: Response) {
+  try {
+    const params = validateBody(req.body)
+    res.status(200).json({ cleanedBody: profaneWords(params.body) })
+  } catch (err) {
+    if (err instanceof Error) {
+      res.status(400).json({ error: err.message })
     }
-  })
-}
-
-function validateBody(parsedBody: any) {
-  if (!parsedBody && !parsedBody.body) {
-    console.log('Invalid body')
-    throw new Error('Invalid body')
   }
-  return parsedBody as { body: string }
 }
 
-export default validateChirp
+function validateBody(parsedBody: any): Parameters {
+  if (!parsedBody && !parsedBody.body) {
+    throw new Error('Something went wrong')
+  }
+  if (parsedBody.body.length > 140) {
+    throw new Error('Chirp is too long')
+  }
+  return parsedBody
+}
+
+function profaneWords(body: string) {
+  const wordsToReplace = ['kerfuffle', 'sharbert', 'fornax']
+  const pattern = new RegExp(`\\b(${wordsToReplace.join('|')})\\b`, 'gi')
+  return body.replace(pattern, '****')
+}
+
+export default handlerValidateChirp
