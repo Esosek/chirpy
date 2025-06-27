@@ -12,7 +12,7 @@ import handlerMetric from './handlers/metrics.js'
 import handlerReset from './handlers/reset.js'
 import handlerCreateUser from './handlers/create_user.js'
 import handlerCreateChirp from './handlers/create_chirp.js'
-import handlerGetChirps from './handlers/get_chirps.js'
+import { handlerGetChirps, handlerGetChirp } from './handlers/get_chirps.js'
 
 const migrationClient = postgres(config.db.url, { max: 1 })
 await migrate(drizzle(migrationClient), config.db.migrationConfig)
@@ -28,6 +28,7 @@ app.get('/admin/metrics', handlerMetric)
 app.post('/admin/reset', handlerReset)
 app.post('/api/users', handlerCreateUser)
 app.get('/api/chirps', handlerGetChirps)
+app.get('/api/chirps/:chirpId', handlerGetChirp)
 app.post('/api/chirps', handlerCreateChirp)
 app.use(errorHandler)
 

@@ -1,14 +1,13 @@
-import { NextFunction, Request, Response } from 'express'
-import { ValidationError } from '../types/errors.js'
+import { Request, Response } from 'express'
+import { NotFoundError, ValidationError } from '../types/errors.js'
 
-function errorHandler(
-  err: Error,
-  _req: Request,
-  res: Response,
-  next: NextFunction
-) {
+function errorHandler(err: Error, _req: Request, res: Response) {
   if (err instanceof ValidationError) {
     res.status(400).json({ error: err.message })
+  }
+  if (err instanceof NotFoundError) {
+    console.log(err.message)
+    res.status(404).send('Not Found')
   } else {
     console.log(err)
     res.status(500).send('Internal Server Error')

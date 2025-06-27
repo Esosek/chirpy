@@ -1,9 +1,29 @@
-import { Request, Response } from 'express'
-import { getChiprs } from '../db/queries/chirps.js'
+import { Request, Response, NextFunction } from 'express'
+import { getChiprs, getChirpById } from '../db/queries/chirps.js'
 
-async function handlerGetChirps(_req: Request, res: Response) {
-  const chirps = await getChiprs()
-  res.status(200).json(chirps)
+export async function handlerGetChirps(
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const chirps = await getChiprs()
+    res.status(200).json(chirps)
+  } catch (err) {
+    next(err)
+  }
 }
 
-export default handlerGetChirps
+export async function handlerGetChirp(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const chirpId = req.params['chirpId']
+    const chirp = await getChirpById(chirpId)
+    res.status(200).json(chirp)
+  } catch (err) {
+    next(err)
+  }
+}
