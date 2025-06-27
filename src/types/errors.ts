@@ -9,3 +9,9 @@ export class ValidationError extends Error {
     super(message)
   }
 }
+
+export class AuthenticationError extends Error {
+  constructor(message: string) {
+    super(message)
+  }
+}
