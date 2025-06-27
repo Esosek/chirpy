@@ -15,7 +15,10 @@ async function createChirpHandler(
 ) {
   try {
     const params = validateBody(req.body)
-    const createdChirp = await createChirp(params.userId, params.body)
+    const createdChirp = await createChirp(
+      params.userId,
+      profaneWords(params.body)
+    )
     res.status(201).json(createdChirp)
   } catch (err) {
     next(err)
