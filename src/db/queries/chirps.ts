@@ -18,9 +18,18 @@ export async function getChirpById(chirpId: string) {
       .select()
       .from(chirps)
       .where(eq(chirps.id, chirpId))
+
+    if (!result) {
+      throw new NotFoundError('Chirp not found')
+    }
+
     return result
   } catch (err) {
-    throw new NotFoundError('Failed to retrieve chirp')
+    if (err instanceof NotFoundError) {
+      throw err
+    }
+    console.log(err)
+    throw new Error('Failed to retrieve chirp')
   }
 }
 
