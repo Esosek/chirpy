@@ -1,0 +1,64 @@
+import { describe, it, expect, beforeAll } from 'vitest'
+import {
+  makeJWT,
+  validateJWT,
+  hashPassword,
+  checkPasswordHash
+} from '../auth.js'
+
+describe('Password Hashing', () => {
+  const password1 = 'correctPassword123!'
+  const password2 = 'anotherPassword456!'
+  let hash1: string
+
+  beforeAll(async () => {
+    hash1 = await hashPassword(password1)
+  })
+
+  it('should return true for the correct password', async () => {
+    const result = await checkPasswordHash(password1, hash1)
+    expect(result).toBe(true)
+  })
+
+  it('should return false for the wrong password', async () => {
+    const result = await checkPasswordHash(password2, hash1)
+    expect(result).toBe(false)
+  })
+})
+
+describe('JWT authentication', () => {
+  const userId = '0320e649-63cc-4a72-84cd-654ba566303a'
+  const expiresIn = 1
+  const secret1 = 'justlife'
+  const secret2 = 'topsecret'
+  let jwt = ''
+
+  beforeAll(async () => {
+    jwt = makeJWT(userId, expiresIn, secret1)
+  })
+
+  it('should generate a JWT', () => {
+    expect(jwt).toBeDefined()
+  })
+
+  it('should verify token with correct secret', () => {
+    const jwtUserId = validateJWT(jwt, secret1)
+    expect(jwtUserId).toBe(userId)
+  })
+
+  it('should fail to verify token with wrong secret', () => {
+    expect(() => validateJWT(jwt, secret2)).toThrowError()
+  })
+
+  it('should fail to verify expired token', async () => {
+    const jwt = makeJWT(userId, expiresIn, secret1)
+    const jwtUserId = validateJWT(jwt, secret1)
+    expect(jwtUserId).toBe(userId)
+
+    await new Promise((resolve) => {
+      setTimeout(resolve, expiresIn * 1000 + 50)
+    })
+
+    expect(() => validateJWT(jwt, secret1)).toThrowError()
+  })
+})

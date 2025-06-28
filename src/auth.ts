@@ -1,4 +1,5 @@
 import bcrypt from 'bcrypt'
+import * as jwt from 'jsonwebtoken'
 
 export async function hashPassword(password: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
@@ -23,4 +24,34 @@ export async function checkPasswordHash(
       resolve(result)
     })
   })
+}
+
+type payload = Pick<jwt.JwtPayload, 'iss' | 'sub' | 'iat' | 'exp'>
+
+export function makeJWT(
+  userID: string,
+  expiresIn: number,
+  secret: string
+): string {
+  const issuedAt = Math.floor(Date.now() / 1000)
+  const payload: payload = {
+    iss: 'chirpy',
+    sub: userID,
+    iat: issuedAt,
+    exp: issuedAt + expiresIn
+  }
+  return jwt.sign(payload, secret)
+}
+
+export function validateJWT(tokenString: string, secret: string): string {
+  try {
+    const payload = jwt.verify(tokenString, secret)
+    if (payload.sub && typeof payload.sub === 'string') {
+      return payload.sub
+    } else {
+      throw new Error('JWT payload sub is missing or in wrong format')
+    }
+  } catch (err) {
+    throw new Error('JWT verification failed')
+  }
 }
