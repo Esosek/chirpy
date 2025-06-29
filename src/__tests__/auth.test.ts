@@ -1,7 +1,9 @@
 import { describe, it, expect, beforeAll } from 'vitest'
+import { Request } from 'express'
 import {
   makeJWT,
   validateJWT,
+  getBearerToken,
   hashPassword,
   checkPasswordHash
 } from '../auth.js'
@@ -60,5 +62,27 @@ describe('JWT authentication', () => {
     })
 
     expect(() => validateJWT(jwt, secret1)).toThrowError()
+  })
+
+  it('should extract the bearer token from Authorization header', () => {
+    const mockRequest = {
+      get: (header: string) => {
+        if (header === 'Authorization') {
+          return 'Bearer mockToken'
+        }
+        return null
+      }
+    }
+    const token = getBearerToken(mockRequest as Request)
+    expect(token).toBe('mockToken')
+  })
+
+  it('should throw an error if no bearer token is found in Authorization header', () => {
+    const mockRequest = {
+      get: (_header: string) => {
+        return undefined
+      }
+    }
+    expect(() => getBearerToken(mockRequest as Request)).toThrowError
   })
 })

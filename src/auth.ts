@@ -1,5 +1,6 @@
 import bcrypt from 'bcrypt'
 import * as jwt from 'jsonwebtoken'
+import { Request } from 'express'
 
 export async function hashPassword(password: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
@@ -54,4 +55,12 @@ export function validateJWT(tokenString: string, secret: string): string {
   } catch (err) {
     throw new Error('JWT verification failed')
   }
+}
+
+export function getBearerToken(req: Request) {
+  const authHeader = req.get('Authorization')
+  if (!authHeader) {
+    throw new Error('Authorization header is missing')
+  }
+  return authHeader.split(' ')[1]
 }
