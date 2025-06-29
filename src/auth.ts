@@ -1,6 +1,8 @@
 import bcrypt from 'bcrypt'
-import * as jwt from 'jsonwebtoken'
+import jwt from 'jsonwebtoken'
 import { Request } from 'express'
+
+import { AuthenticationError } from './types/errors.js'
 
 export async function hashPassword(password: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
@@ -44,6 +46,7 @@ export function makeJWT(
   return jwt.sign(payload, secret)
 }
 
+// Returns userId
 export function validateJWT(tokenString: string, secret: string): string {
   try {
     const payload = jwt.verify(tokenString, secret)
@@ -53,14 +56,14 @@ export function validateJWT(tokenString: string, secret: string): string {
       throw new Error('JWT payload sub is missing or in wrong format')
     }
   } catch (err) {
-    throw new Error('JWT verification failed')
+    throw new AuthenticationError('JWT token is invalid')
   }
 }
 
 export function getBearerToken(req: Request) {
   const authHeader = req.get('Authorization')
   if (!authHeader) {
-    throw new Error('Authorization header is missing')
+    throw new AuthenticationError('Authorization header is missing')
   }
   return authHeader.split(' ')[1]
 }

@@ -2,6 +2,8 @@ import { NextFunction, Request, Response } from 'express'
 
 import { ValidationError } from '../types/errors.js'
 import { createChirp } from '../db/queries/chirps.js'
+import { config } from '../config.js'
+import { getBearerToken, validateJWT } from '../auth.js'
 
 type Parameters = {
   body: string
@@ -14,11 +16,10 @@ async function createChirpHandler(
   next: NextFunction
 ) {
   try {
+    const bearerToken = getBearerToken(req)
+    const userId = validateJWT(bearerToken, config.apiSecret)
     const params = validateBody(req.body)
-    const createdChirp = await createChirp(
-      params.userId,
-      profaneWords(params.body)
-    )
+    const createdChirp = await createChirp(userId, profaneWords(params.body))
     res.status(201).json(createdChirp)
   } catch (err) {
     next(err)
@@ -29,9 +30,6 @@ function validateBody(parsedBody: any): Parameters {
   const validationErrors: string[] = []
   if (!parsedBody) {
     throw new Error('Something went wrong')
-  }
-  if (!parsedBody.userId) {
-    validationErrors.push('Missing userId')
   }
   if (!parsedBody.body) {
     validationErrors.push('Missing chirp content')

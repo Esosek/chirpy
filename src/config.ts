@@ -5,6 +5,7 @@ process.loadEnvFile()
 type ApiConfig = {
   fileserverHits: number
   platform: 'dev' | 'prod'
+  apiSecret: string
   db: DBConfig
 }
 
@@ -16,6 +17,7 @@ type DBConfig = {
 export const config: ApiConfig = {
   fileserverHits: 0,
   platform: getPlatform(),
+  apiSecret: envOrThrow('API_SECRET'),
   db: {
     url: envOrThrow('DB_URL'),
     migrationConfig: {
