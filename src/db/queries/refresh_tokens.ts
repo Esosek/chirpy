@@ -11,3 +11,7 @@ export async function storeRefreshToken(userId: string, token: string) {
     throw new Error('Failed to create refresh token')
   }
 }
+
+export async function getRefreshToken(token: string) {
+  // TODO getRefreshToken from db
+}
