@@ -2,10 +2,9 @@ import { NextFunction, Request, Response } from 'express'
 
 import { ValidationError, AuthenticationError } from '../types/errors.js'
 import { config } from '../config.js'
-import { checkPasswordHash, makeJWT } from '../auth.js'
+import { checkPasswordHash, makeJWT, makeRefreshToken } from '../auth.js'
 import { getUserByEmail } from '../db/queries/users.js'
-
-const MAX_TOKEN_EXPIRATION = 60 * 24 // 24 hours
+import { storeRefreshToken } from 'src/db/queries/refresh_tokens.js'
 
 async function handlerLogin(req: Request, res: Response, next: NextFunction) {
   try {
@@ -20,12 +19,14 @@ async function handlerLogin(req: Request, res: Response, next: NextFunction) {
     if (!isUserAuthenticated) {
       throw new AuthenticationError('Incorrect email or password')
     }
-    const jwtToken = makeJWT(
-      user.id,
-      validatedBody.expiresInSeconds,
-      config.apiSecret
-    )
-    res.status(200).json({ ...user, token: jwtToken })
+    const jwtToken = makeJWT(user.id, config.apiSecret)
+
+    const refreshToken = await makeRefreshToken()
+    await storeRefreshToken(user.id, refreshToken)
+
+    res
+      .status(200)
+      .json({ ...user, accessToken: jwtToken, refreshToken: refreshToken })
   } catch (err) {
     next(err)
   }
@@ -45,22 +46,12 @@ function validateBody(reqBody: any) {
     validationErrors.push('Password is required')
   }
 
-  if (
-    reqBody.expiresInSeconds &&
-    typeof reqBody.expiresInSeconds !== 'number'
-  ) {
-    throw new ValidationError('Expires in seconds must be a number')
-  }
   if (validationErrors.length > 0) {
     throw new ValidationError(validationErrors.join(','))
   }
   return {
     email: reqBody.email,
-    password: reqBody.password,
-    expiresInSeconds:
-      reqBody.expiresInSeconds < MAX_TOKEN_EXPIRATION
-        ? reqBody.expiresInSeconds
-        : MAX_TOKEN_EXPIRATION
+    password: reqBody.password
   }
 }
 

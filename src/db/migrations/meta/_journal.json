@@ -15,6 +15,13 @@
       "when": 1751044083778,
       "tag": "0001_short_dreaming_celestial",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1752405842218,
+      "tag": "0002_wise_korvac",
+      "breakpoints": true
     }
   ]
 }

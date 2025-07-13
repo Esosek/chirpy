@@ -1,8 +1,11 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import { Request } from 'express'
+import crypto from 'node:crypto'
 
 import { AuthenticationError } from './types/errors.js'
+
+const MAX_JWT_EXPIRATION = 60 // 1 hour
 
 export async function hashPassword(password: string): Promise<string> {
   return new Promise<string>((resolve, reject) => {
@@ -31,17 +34,13 @@ export async function checkPasswordHash(
 
 type payload = Pick<jwt.JwtPayload, 'iss' | 'sub' | 'iat' | 'exp'>
 
-export function makeJWT(
-  userID: string,
-  expiresIn: number,
-  secret: string
-): string {
+export function makeJWT(userID: string, secret: string): string {
   const issuedAt = Math.floor(Date.now() / 1000)
   const payload: payload = {
     iss: 'chirpy',
     sub: userID,
     iat: issuedAt,
-    exp: issuedAt + expiresIn
+    exp: issuedAt + MAX_JWT_EXPIRATION
   }
   return jwt.sign(payload, secret)
 }
@@ -66,4 +65,8 @@ export function getBearerToken(req: Request) {
     throw new AuthenticationError('Authorization header is missing')
   }
   return authHeader.split(' ')[1]
+}
+
+export async function makeRefreshToken() {
+  return crypto.randomBytes(32).toString('hex')
 }
