@@ -36,7 +36,7 @@ describe('JWT authentication', () => {
   let jwt = ''
 
   beforeAll(async () => {
-    jwt = makeJWT(userId, expiresIn, secret1)
+    jwt = makeJWT(userId, secret1, expiresIn)
   })
 
   it('should generate a JWT', () => {
@@ -53,7 +53,7 @@ describe('JWT authentication', () => {
   })
 
   it('should fail to verify expired token', async () => {
-    const jwt = makeJWT(userId, expiresIn, secret1)
+    const jwt = makeJWT(userId, secret1, expiresIn)
     const jwtUserId = validateJWT(jwt, secret1)
     expect(jwtUserId).toBe(userId)
 

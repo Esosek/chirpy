@@ -34,13 +34,17 @@ export async function checkPasswordHash(
 
 type payload = Pick<jwt.JwtPayload, 'iss' | 'sub' | 'iat' | 'exp'>
 
-export function makeJWT(userID: string, secret: string): string {
+export function makeJWT(
+  userID: string,
+  secret: string,
+  expiresIn = MAX_JWT_EXPIRATION
+): string {
   const issuedAt = Math.floor(Date.now() / 1000)
   const payload: payload = {
     iss: 'chirpy',
     sub: userID,
     iat: issuedAt,
-    exp: issuedAt + MAX_JWT_EXPIRATION
+    exp: issuedAt + expiresIn
   }
   return jwt.sign(payload, secret)
 }

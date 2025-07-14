@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express'
 
-import { getBearerToken } from '../auth.js'
-import { AuthenticationError } from '../types/errors.js'
+import { getBearerToken, makeJWT } from '../auth.js'
+import { getUserFromRefreshToken } from 'src/db/queries/refresh_tokens.js'
+import { config } from '../config.js'
 
 async function handlerRefreshToken(
   req: Request,
@@ -10,12 +11,12 @@ async function handlerRefreshToken(
 ) {
   try {
     const bearerToken = getBearerToken(req)
-    // TODO: Implement handlerRefreshToken
+    const user = await getUserFromRefreshToken(bearerToken)
+    const accessToken = makeJWT(user.id, config.apiSecret)
+    res.status(200).send({ token: accessToken })
   } catch (err) {
     next(err)
   }
 }
-
-function getRefreshToken() {}
 
 export default handlerRefreshToken
