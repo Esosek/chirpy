@@ -4,7 +4,7 @@ import { ValidationError, AuthenticationError } from '../types/errors.js'
 import { config } from '../config.js'
 import { checkPasswordHash, makeJWT, makeRefreshToken } from '../auth.js'
 import { getUserByEmail } from '../db/queries/users.js'
-import { storeRefreshToken } from 'src/db/queries/refresh_tokens.js'
+import { storeRefreshToken } from '../db/queries/refresh_tokens.js'
 
 async function handlerLogin(req: Request, res: Response, next: NextFunction) {
   try {
@@ -26,7 +26,7 @@ async function handlerLogin(req: Request, res: Response, next: NextFunction) {
 
     res
       .status(200)
-      .json({ ...user, accessToken: jwtToken, refreshToken: refreshToken })
+      .json({ ...user, token: jwtToken, refreshToken: refreshToken })
   } catch (err) {
     next(err)
   }

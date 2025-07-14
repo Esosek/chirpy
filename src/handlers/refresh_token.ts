@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express'
 
 import { getBearerToken, makeJWT } from '../auth.js'
-import { getUserFromRefreshToken } from 'src/db/queries/refresh_tokens.js'
+import { getUserFromRefreshToken } from '../db/queries/refresh_tokens.js'
 import { config } from '../config.js'
 
 async function handlerRefreshToken(
