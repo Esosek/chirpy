@@ -1,7 +1,8 @@
-import { eq } from 'drizzle-orm'
+import { eq, and } from 'drizzle-orm'
+
+import { AuthorizationError, NotFoundError } from '../../types/errors.js'
 import { db } from '../index.js'
 import { chirps } from '../schema.js'
-import { NotFoundError } from '../../types/errors.js'
 
 export async function getChiprs() {
   try {
@@ -42,5 +43,21 @@ export async function createChirp(userId: string, body: string) {
     return result
   } catch (err) {
     throw new Error('Failed to create chirp')
+  }
+}
+
+export async function deleteChirp(userId: string, chirpId: string) {
+  try {
+    const chirp = await getChirpById(chirpId)
+    if (chirp.userId !== userId) {
+      throw new AuthorizationError('Chirp not owned by user')
+    }
+    await db
+      .delete(chirps)
+      .where(and(eq(chirps.id, chirpId), eq(chirps.userId, userId)))
+  } catch (err) {
+    if (err instanceof NotFoundError || err instanceof AuthorizationError) {
+      throw err
+    } else throw new Error('Chirp deletion failed')
   }
 }

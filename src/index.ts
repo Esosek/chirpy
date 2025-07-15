@@ -12,6 +12,7 @@ import handlerMetric from './handlers/metrics.js'
 import handlerReset from './handlers/reset.js'
 import { handlerCreateUser, handlerUpdateUser } from './handlers/users.js'
 import handlerCreateChirp from './handlers/create_chirp.js'
+import handlerDeleteChirp from './handlers/delete_chirp.js'
 import { handlerGetChirps, handlerGetChirp } from './handlers/get_chirps.js'
 import handlerLogin from './handlers/login.js'
 import handlerRefreshToken from './handlers/refresh_token.js'
@@ -33,6 +34,7 @@ app.post('/api/users', handlerCreateUser)
 app.put('/api/users', handlerUpdateUser)
 app.get('/api/chirps', handlerGetChirps)
 app.get('/api/chirps/:chirpId', handlerGetChirp)
+app.delete('/api/chirps/:chirpId', handlerDeleteChirp)
 app.post('/api/chirps', handlerCreateChirp)
 app.post('/api/login', handlerLogin)
 app.post('/api/refresh', handlerRefreshToken)
