@@ -10,7 +10,7 @@ import middlewareMetricsInc from './middleware/metrics_inc.js'
 import handlerReadiness from './handlers/readiness.js'
 import handlerMetric from './handlers/metrics.js'
 import handlerReset from './handlers/reset.js'
-import handlerCreateUser from './handlers/create_user.js'
+import { handlerCreateUser, handlerUpdateUser } from './handlers/users.js'
 import handlerCreateChirp from './handlers/create_chirp.js'
 import { handlerGetChirps, handlerGetChirp } from './handlers/get_chirps.js'
 import handlerLogin from './handlers/login.js'
@@ -30,6 +30,7 @@ app.get('/api/healthz', handlerReadiness)
 app.get('/admin/metrics', handlerMetric)
 app.post('/admin/reset', handlerReset)
 app.post('/api/users', handlerCreateUser)
+app.put('/api/users', handlerUpdateUser)
 app.get('/api/chirps', handlerGetChirps)
 app.get('/api/chirps/:chirpId', handlerGetChirp)
 app.post('/api/chirps', handlerCreateChirp)

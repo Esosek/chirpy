@@ -2,11 +2,11 @@ import { eq } from 'drizzle-orm'
 
 import { db } from '../index.js'
 import { NotFoundError } from '../../types/errors.js'
-import { type NewUser, users } from '../schema.js'
+import { type User, users } from '../schema.js'
 
-type UserResponse = Omit<NewUser, 'hashedPassword'>
+type UserResponse = Omit<User, 'hashedPassword'>
 
-export async function createUser(user: NewUser): Promise<UserResponse> {
+export async function createUser(user: User): Promise<UserResponse> {
   try {
     const [result] = await db
       .insert(users)
@@ -24,6 +24,24 @@ export async function getUserByEmail(email: string) {
   try {
     const [result] = await db.select().from(users).where(eq(users.email, email))
     return result
+  } catch (err) {
+    throw new NotFoundError('User not found')
+  }
+}
+
+export async function updateUser(user: User) {
+  try {
+    if (!user.id) {
+      throw new Error('Missing user id')
+    }
+    const [result] = await db
+      .update(users)
+      .set({ email: user.email, hashedPassword: user.hashedPassword })
+      .where(eq(users.id, user.id!))
+      .returning()
+
+    const { hashedPassword, ...userResponse } = result
+    return userResponse
   } catch (err) {
     throw new NotFoundError('User not found')
   }
