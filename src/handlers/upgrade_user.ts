@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
 
-import { ValidationError } from '../types/errors.js'
+import { AuthenticationError, ValidationError } from '../types/errors.js'
 import { upgradeUser } from '../db/queries/users.js'
+import { getAPIKey } from '../auth.js'
+import { config } from '../config.js'
 
 type RequestBody = {
   event: string
@@ -16,6 +18,10 @@ async function handlerUpgradeUser(
   next: NextFunction
 ) {
   try {
+    const apiKey = getAPIKey(req)
+    if (apiKey !== config.polkaKey) {
+      throw new AuthenticationError('Invalid API key')
+    }
     const validatedInput = validateInput(req.body)
     if (validatedInput.event !== 'user.upgraded') {
       res.status(204).send()

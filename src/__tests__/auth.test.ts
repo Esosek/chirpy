@@ -5,7 +5,8 @@ import {
   validateJWT,
   getBearerToken,
   hashPassword,
-  checkPasswordHash
+  checkPasswordHash,
+  getAPIKey
 } from '../auth.js'
 
 describe('Password Hashing', () => {
@@ -84,5 +85,31 @@ describe('JWT authentication', () => {
       }
     }
     expect(() => getBearerToken(mockRequest as Request)).toThrowError
+  })
+})
+
+describe('API key authentication', () => {
+  const apiKey = 'mockApiKey'
+
+  it('should extract the API key from Authorization header', () => {
+    const mockRequest = {
+      get: (header: string) => {
+        if (header === 'Authorization') {
+          return `ApiKey ${apiKey}`
+        }
+        return null
+      }
+    }
+    const key = getAPIKey(mockRequest as Request)
+    expect(key).toBe(apiKey)
+  })
+
+  it('should throw an error if no API key is found in Authorization header', () => {
+    const mockRequest = {
+      get: (_header: string) => {
+        return undefined
+      }
+    }
+    expect(() => getAPIKey(mockRequest as Request)).toThrowError
   })
 })

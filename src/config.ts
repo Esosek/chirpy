@@ -6,6 +6,7 @@ type ApiConfig = {
   fileserverHits: number
   platform: 'dev' | 'prod'
   apiSecret: string
+  polkaKey: string
   db: DBConfig
 }
 
@@ -18,6 +19,7 @@ export const config: ApiConfig = {
   fileserverHits: 0,
   platform: getPlatform(),
   apiSecret: envOrThrow('API_SECRET'),
+  polkaKey: envOrThrow('POLKA_KEY'),
   db: {
     url: envOrThrow('DB_URL'),
     migrationConfig: {
