@@ -17,6 +17,7 @@ import { handlerGetChirps, handlerGetChirp } from './handlers/get_chirps.js'
 import handlerLogin from './handlers/login.js'
 import handlerRefreshToken from './handlers/refresh_token.js'
 import handlerRevokeToken from './handlers/revoke_token.js'
+import handlerUpgradeUser from './handlers/upgrade_user.js'
 
 const migrationClient = postgres(config.db.url, { max: 1 })
 await migrate(drizzle(migrationClient), config.db.migrationConfig)
@@ -39,6 +40,7 @@ app.post('/api/chirps', handlerCreateChirp)
 app.post('/api/login', handlerLogin)
 app.post('/api/refresh', handlerRefreshToken)
 app.post('/api/revoke', handlerRevokeToken)
+app.post('/api/polka/webhooks', handlerUpgradeUser)
 app.use(errorHandler)
 
 app.listen(PORT, () => {

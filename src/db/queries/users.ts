@@ -54,3 +54,20 @@ export async function deleteAllUsers() {
     throw new Error('Failed to delete users')
   }
 }
+
+export async function upgradeUser(userId: string) {
+  try {
+    const [result] = await db.select().from(users).where(eq(users.id, userId))
+    if (!result) {
+      throw new NotFoundError('User not found')
+    }
+    await db
+      .update(users)
+      .set({ isChirpyRed: true })
+      .where(eq(users.id, userId))
+  } catch (err) {
+    if (err instanceof NotFoundError) {
+      throw err
+    } else throw new Error('Failed to upgrade user')
+  }
+}
