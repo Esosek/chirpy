@@ -23,9 +23,14 @@ export async function createUser(user: User): Promise<UserResponse> {
 export async function getUserByEmail(email: string) {
   try {
     const [result] = await db.select().from(users).where(eq(users.email, email))
+    if (!result) {
+      throw new NotFoundError('User not found')
+    }
     return result
   } catch (err) {
-    throw new NotFoundError('User not found')
+    if (err instanceof NotFoundError) {
+      throw err
+    } else throw new Error('Retrieving user failed')
   }
 }
 
