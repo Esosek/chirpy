@@ -4,11 +4,17 @@ import { AuthenticationError, NotFoundError } from '../../types/errors.js'
 import { db } from '../index.js'
 import { refreshTokens, users } from '../schema.js'
 
+const REFRESH_TOKEN_LIFETIME = 60 * 60 * 24 * 60 // 60 days
+
 export async function storeRefreshToken(userId: string, token: string) {
   try {
     await db
       .insert(refreshTokens)
-      .values({ userId, token, expiresAt: new Date(Date.now() + 60) })
+      .values({
+        userId,
+        token,
+        expiresAt: new Date(Date.now() + REFRESH_TOKEN_LIFETIME)
+      })
       .returning()
   } catch (err) {
     throw new Error('Failed to create refresh token')
