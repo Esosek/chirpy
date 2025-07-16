@@ -1,6 +1,6 @@
 # Users
 
-Serves for creating and updating users. For a user to be able to [login](./authentication.md) and post [chirps](./chirps.md) they need to be created first.
+Resource that serves for creating and updating users. For a user to be able to [login](./authentication.md) and post [chirps](./chirps.md) they need to be created first.
 
 ## Public Endpoint
 

@@ -1,6 +1,6 @@
 # Authentication
 
-Authorized endpoints requires a JWT present in Authorization header `Bearer {JWT token}`. The lifetime of a JWT is 1 hour a lifetime of a refresh token is 60 days. The user needs to be created first via users resource.
+Authorized endpoints requires a JWT present in Authorization header `Bearer {JWT token}`. The lifetime of a JWT is 1 hour and a lifetime of a refresh token is 60 days. The user needs to be created first via [users](users.md) resource.
 
 [How to create new user](./users.md##post-apiusers)
 
