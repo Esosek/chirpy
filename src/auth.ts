@@ -80,6 +80,5 @@ export function getAPIKey(req: Request) {
   if (!authHeader) {
     throw new AuthenticationError('Authorization header is missing')
   }
-  console.log(authHeader)
   return authHeader.split(' ')[1]
 }

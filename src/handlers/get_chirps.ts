@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from 'express'
-import { getChiprs, getChirpById } from '../db/queries/chirps.js'
+import { getChirps, getChirpById } from '../db/queries/chirps.js'
 
 export async function handlerGetChirps(
-  _req: Request,
+  req: Request,
   res: Response,
   next: NextFunction
 ) {
   try {
-    const chirps = await getChiprs()
+    const authorId = getAuthorId(req)
+    const chirps = await getChirps(authorId)
     res.status(200).json(chirps)
   } catch (err) {
     next(err)
@@ -26,4 +27,13 @@ export async function handlerGetChirp(
   } catch (err) {
     next(err)
   }
+}
+
+function getAuthorId(req: Request) {
+  let authorId = ''
+  let authorIdQuery = req.query.authorId
+  if (typeof authorIdQuery === 'string') {
+    authorId = authorIdQuery
+  }
+  return authorId
 }

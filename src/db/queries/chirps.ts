@@ -4,10 +4,16 @@ import { AuthorizationError, NotFoundError } from '../../types/errors.js'
 import { db } from '../index.js'
 import { chirps } from '../schema.js'
 
-export async function getChiprs() {
+export async function getChirps(authorId: string) {
   try {
-    const result = await db.select().from(chirps).orderBy(chirps.createdAt)
-    return result
+    if (!authorId.length) {
+      return await db.select().from(chirps).orderBy(chirps.createdAt)
+    }
+    return await db
+      .select()
+      .from(chirps)
+      .where(eq(chirps.userId, authorId))
+      .orderBy(chirps.createdAt)
   } catch (err) {
     throw new Error('Failed to retrieve chirps')
   }
