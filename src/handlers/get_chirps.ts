@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
+
+import { type Chirp } from '../db/schema.js'
 import { getChirps, getChirpById } from '../db/queries/chirps.js'
 
 export async function handlerGetChirps(
@@ -9,6 +11,7 @@ export async function handlerGetChirps(
   try {
     const authorId = getAuthorId(req)
     const chirps = await getChirps(authorId)
+    sortChirps(chirps, req.query['sort'])
     res.status(200).json(chirps)
   } catch (err) {
     next(err)
@@ -36,4 +39,13 @@ function getAuthorId(req: Request) {
     authorId = authorIdQuery
   }
   return authorId
+}
+
+function sortChirps(chirps: Chirp[], sort: any) {
+  console.log(sort)
+  if (sort === 'desc') {
+    chirps.sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+  } else {
+    chirps.sort((a, b) => (a.createdAt > b.createdAt ? 1 : -1))
+  }
 }

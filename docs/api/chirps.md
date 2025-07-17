@@ -22,6 +22,7 @@ Chirps are short messages submitted by users.
 **Queries**:
 
 - `authorId` - The user ID for which to retrieve chirps
+- `sort` - Sort order for chirps `asc` or `desc`
 
 ### `GET /api/chirps/{chirpId}`
 
