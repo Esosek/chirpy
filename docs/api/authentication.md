@@ -20,6 +20,18 @@ Authorized endpoints requires a JWT present in Authorization header `Bearer {JWT
 
 - Returns JWT `token` and `refreshToken` that are used for authenticating requests and refreshing token.
 
+```JSON
+{
+    "id": "1d00d065-ed01-40ba-a83e-7d86de53e199",
+    "createdAt": "2025-07-17T09:42:52.496Z",
+    "updatedAt": "2025-07-17T09:42:52.496Z",
+    "email": "mloneusk@example.co",
+    "isChirpyRed": false,
+    "token": "jwt-short-lived-1-hour",
+    "refreshToken": "refresh-token-60-days"
+}
+```
+
 ### `POST /api/refresh`
 
 - Generates a new JWT token for a valid refresh token. Refresh token could be expired or revoked which then requires user to login again
